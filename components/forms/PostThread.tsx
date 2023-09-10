@@ -14,33 +14,23 @@ import {
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useOrganization } from "@clerk/nextjs";
 
 import { usePathname, useRouter } from "next/navigation";
 
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
 
-    // interface Props {
-    //     user: {
-    //     id: string;
-    //     objectId: string;
-    //     username: string;
-    //     name: string;
-    //     bio: string;
-    //     image: string;
-    //     };
-    //     btnTitle: string;
-    // }
+const PostThread = ({ userId }: {userId: string}) => {
+    const router = useRouter();
+    const pathname = usePathname();
+    const { organization } = useOrganization();
 
-    const PostThread = ({ userId }: {userId: string}) => {
-        const router = useRouter();
-        const pathname = usePathname();
-    
-        const form = useForm({
-            resolver: zodResolver(ThreadValidation),
-            defaultValues: {
-            thread: '',
-            accountId: userId
+    const form = useForm({
+        resolver: zodResolver(ThreadValidation),
+        defaultValues: {
+        thread: '',
+        accountId: userId
         }
     });
 
@@ -49,7 +39,7 @@ import { createThread } from "@/lib/actions/thread.actions";
         await createThread({ 
             text: values.thread,
             author: userId,
-            communityId: null,
+            communityId: organization?organization.id:null,
             path: pathname
         })
         router.push("/");

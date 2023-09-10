@@ -7,7 +7,7 @@ const Page = async () => {
   const user = await currentUser();
   if(!user) return null; //if user is not logged in, return null
 
-  const userInfo = await fetchUser(user?.id);
+  const userInfo = await fetchUser(user?.id); //connect data comming from the clerk to the data comming from the database
   if(userInfo?.onboarded) redirect('/');
 
   const userData = {
